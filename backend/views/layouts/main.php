@@ -7,6 +7,8 @@ use backend\assets\AppAsset;
 use common\widgets\Alert;
 // use yii\bootstrap4\Breadcrumbs;
 use yii\bootstrap4\Html;
+use yii\helpers\Url;
+
 // use yii\bootstrap4\Nav;
 // use yii\bootstrap4\NavBar;
 
@@ -58,7 +60,7 @@ AppAsset::register($this);
 
     <!-- Nav Item - Charts -->
     <li class="nav-item">
-        <a class="nav-link" href="charts.html">
+        <a class="nav-link" href="<?php echo yii\helpers\Url::to(['/product/index']); ?>">
             <i class="fas fa-fw fa-chart-area"></i>
             <span>Products</span></a>
     </li>
@@ -294,7 +296,9 @@ AppAsset::register($this);
 
         </nav>
         <!-- End of Topbar -->
-
+        <div class="p-4">
+            <?php echo $content; ?>
+        </div>
         <a class="scroll-to-top rounded" href="#page-top">
         <i class="fas fa-angle-up"></i>
         </a>
@@ -320,8 +324,7 @@ AppAsset::register($this);
                 </div>
             </div>
         </div>
-    </div>
-        <?php echo $content; ?>
+    </div >
     </div>
 
 

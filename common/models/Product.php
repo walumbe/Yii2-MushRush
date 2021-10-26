@@ -104,6 +104,6 @@ class Product extends \yii\db\ActiveRecord
      */
     public static function find()
     {
-        return new \common\models\Query\ProductsQuery(get_called_class());
+        return new \common\models\Query\ProductQuery(get_called_class());
     }
 }
