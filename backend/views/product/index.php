@@ -39,7 +39,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     return Html::img($model->getImageUrl(), ['style' => 'width: 50px']);
                 }
             ],
-            'price',
+            'price:currency',
             [
                 'attribute' => 'status',
                 'content' => function($model){
