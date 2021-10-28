@@ -12,6 +12,8 @@ use yii\web\IdentityInterface;
  * User model
  *
  * @property integer $id
+ * @property string $firstname
+ * @property string $lastname
  * @property string $username
  * @property string $password_hash
  * @property string $password_reset_token
@@ -54,6 +56,8 @@ class User extends ActiveRecord implements IdentityInterface
     public function rules()
     {
         return [
+            [['firstname','lastname'], 'required'],
+            [['firstname', 'lastname'], 'string', 'max' => '255'],
             ['status', 'default', 'value' => self::STATUS_INACTIVE],
             ['status', 'in', 'range' => [self::STATUS_ACTIVE, self::STATUS_INACTIVE, self::STATUS_DELETED]],
         ];
@@ -213,6 +217,7 @@ class User extends ActiveRecord implements IdentityInterface
 
     public function getUsername()
     {
-        return $this->username;
+        $fullname = trim($this->firstname.' '.$this->lastname);
+        return $fullname ?: $this->username;
     }
 }
