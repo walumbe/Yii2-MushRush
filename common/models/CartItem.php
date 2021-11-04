@@ -17,6 +17,7 @@ use Yii;
  */
 class CartItem extends \yii\db\ActiveRecord
 {
+    const SESSION_KEY = 'CART_ITEMS';
     /**
      * {@inheritdoc}
      */

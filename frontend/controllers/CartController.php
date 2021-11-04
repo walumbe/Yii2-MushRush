@@ -3,7 +3,9 @@ namespace frontend\controllers;
 
 use common\models\CartItem;
 use common\models\Product;
+use Yii;
 use yii\filters\ContentNegotiator;
+use yii\filters\VerbFilter;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
 
@@ -18,16 +20,23 @@ class CartController extends \frontend\base\Controller
             'only' => ['add'],
             'formats' => [
                 'application/json' => Response::FORMAT_JSON,
+            ],
+        ],
+        [
+            'class' => VerbFilter::class,
+            'actions' => [
+                'Delete' => ['POST', 'DELETE'],
             ]
-           ]
+        ]
         ];
     }
     public function actionIndex()
     { 
-        // $cartItems = [];
+      
         if(\Yii::$app->user->isGuest)
         {
             // Get the items from session
+            $cartItems = \Yii::$app->session->get(CartItem::SESSION_KEY, []);
         } else {
             // get the items from the database
             $cartItems = CartItem::findBySql(
@@ -42,7 +51,7 @@ class CartController extends \frontend\base\Controller
                                  LEFT JOIN products p on p.id = c.product_id
                          WHERE c.created_by = :userId",
                 ['userId' => \Yii::$app->user->id])
-                ->asArray()
+                ->asArray() 
                 ->all();
         }
 
@@ -63,6 +72,28 @@ class CartController extends \frontend\base\Controller
         if(\Yii::$app->user->isGuest)
         {
             // save in session
+            $cartItems = \Yii::$app->session->get(CartItem::SESSION_KEY, []);
+            $found = false;
+            foreach ($cartItems as &$item) {
+                if ($item['id'] == $id) {
+                    $item['quantity']++;
+                    $found = true;
+                    break;
+                }
+            }
+            if (!$found) {
+                $cartItem = [
+                    'id' => $id,
+                    'name' => $product->name,
+                    'image' => $product->image,
+                    'price' => $product->price,
+                    'quantity' => 1,
+                    'total_price' => $product->price,
+                ];
+                $cartItems[] = $cartItem;
+            }
+           
+            \Yii::$app->session->set(CartItem::SESSION_KEY, $cartItems);
         }else {
             $id = \Yii::$app->request->post('id');
             $userId = \Yii::$app->user->id;
@@ -87,5 +118,23 @@ class CartController extends \frontend\base\Controller
                 ];
             }
         }
+    }
+
+    public function actionDelete($id)
+    {
+        if(isGuest())
+        {
+            $cartItems = \Yii::$app->session->get(CartItem::SESSION_KEY, []);
+            foreach ($cartItems as $i => $cartItem){
+                if($cartItem['id'] == $id){
+                    array_splice($cartItems, $i, 1);
+                    break;
+                }
+            }
+            \Yii::$app->session->set(CartItem::SESSION_KEY, $cartItems);
+        } else {
+            CartItem::deleteAll(['product_id' => $id, 'created_by' => currentUserId() ]);
+        }
+        return $this->redirect(['index']);
     }
 } 
