@@ -3,11 +3,11 @@
 namespace common\models\Query;
 
 /**
- * This is the ActiveQuery class for [[\common\models\OrderAddress]].
+ * This is the ActiveQuery class for [[\common\models\CustomerAddress]].
  *
- * @see \common\models\OrderAddress
+ * @see \common\models\CustomerAddress
  */
-class OrderAddressQuery extends \yii\db\ActiveQuery
+class CustomerAddressQuery extends \yii\db\ActiveQuery
 {
     /*public function active()
     {
@@ -16,7 +16,7 @@ class OrderAddressQuery extends \yii\db\ActiveQuery
 
     /**
      * {@inheritdoc}
-     * @return \common\models\OrderAddress[]|array
+     * @return \common\models\CustomerAddress[]|array
      */
     public function all($db = null)
     {
@@ -25,7 +25,7 @@ class OrderAddressQuery extends \yii\db\ActiveQuery
 
     /**
      * {@inheritdoc}
-     * @return \common\models\OrderAddress|array|null
+     * @return \common\models\CustomerAddress|array|null
      */
     public function one($db = null)
     {

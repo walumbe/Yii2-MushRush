@@ -5,10 +5,10 @@ namespace common\models;
 use Yii;
 
 /**
- * This is the model class for table "{{%order_addresses}}".
+ * This is the model class for table "{{%customer_addresses}}".
  *
- * @property int $order_id
- * @property string $address
+ * @property int $customer_id
+ * @property string $customer_address
  * @property string $city
  * @property string $state
  * @property string $country
@@ -16,14 +16,14 @@ use Yii;
  *
  * @property Orders $order
  */
-class OrderAddress extends \yii\db\ActiveRecord
+class CustomerAddress extends \yii\db\ActiveRecord
 {
     /**
      * {@inheritdoc}
      */
     public static function tableName()
     {
-        return '{{%order_addresses}}';
+        return '{{%customer_addresses}}';
     }
 
     /**
@@ -32,11 +32,11 @@ class OrderAddress extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['order_id', 'address', 'city', 'state', 'country'], 'required'],
-            [['order_id'], 'integer'],
-            [['address', 'city', 'state', 'country', 'zipcode'], 'string', 'max' => 255],
-            [['order_id'], 'unique'],
-            [['order_id'], 'exist', 'skipOnError' => true, 'targetClass' => Orders::className(), 'targetAttribute' => ['order_id' => 'id']],
+            [['customer__id', 'customer_address', 'city', 'state', 'country'], 'required'],
+            [['customer_id'], 'integer'],
+            [['customer_address', 'city', 'state', 'country', 'zipcode'], 'string', 'max' => 255],
+            [['customer_id'], 'unique'],
+            [['customer_id'], 'exist', 'skipOnError' => true, 'targetClass' => Order::className(), 'targetAttribute' => ['order_id' => 'id']],
         ];
     }
 
@@ -46,8 +46,8 @@ class OrderAddress extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'order_id' => 'Order ID',
-            'address' => 'Address',
+            'customer_id' => 'Order ID',
+            'customer_address' => 'Address',
             'city' => 'City',
             'state' => 'State',
             'country' => 'Country',
@@ -62,7 +62,7 @@ class OrderAddress extends \yii\db\ActiveRecord
      */
     public function getOrder()
     {
-        return $this->hasOne(Orders::className(), ['id' => 'order_id']);
+        return $this->hasOne(Order::className(), ['id' => 'order_id']);
     }
 
     /**
@@ -71,6 +71,6 @@ class OrderAddress extends \yii\db\ActiveRecord
      */
     public static function find()
     {
-        return new \common\models\Query\OrderAddressQuery(get_called_class());
+        return new \common\models\Query\CustomerAddressQuery(get_called_class());
     }
 }

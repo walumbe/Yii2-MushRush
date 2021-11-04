@@ -19,7 +19,7 @@ use Yii;
  * @property int|null $created_by
  *
  * @property User $createdBy
- * @property OrderAddresses $orderAddresses
+ * @property CustomerAddresses $customerAddresses
  * @property OrderItems[] $orderItems
  */
 class Order extends \yii\db\ActiveRecord
@@ -77,13 +77,13 @@ class Order extends \yii\db\ActiveRecord
     }
 
     /**
-     * Gets query for [[OrderAddresses]].
+     * Gets query for [[CustomerAddresses]].
      *
-     * @return \yii\db\ActiveQuery|\common\models\Query\OrderAddressesQuery
+     * @return \yii\db\ActiveQuery|\common\models\Query\CustomerAddressQuery
      */
     public function getOrderAddresses()
     {
-        return $this->hasOne(OrderAddresses::className(), ['order_id' => 'id']);
+        return $this->hasOne(CustomerAddress::className(), ['order_id' => 'id']);
     }
 
     /**
@@ -93,7 +93,7 @@ class Order extends \yii\db\ActiveRecord
      */
     public function getOrderItems()
     {
-        return $this->hasMany(OrderItems::className(), ['order_id' => 'id']);
+        return $this->hasMany(OrderItem::className(), ['order_id' => 'id']);
     }
 
     /**
