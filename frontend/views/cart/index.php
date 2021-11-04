@@ -23,7 +23,7 @@
         </thead>
         <tbody>
             <?php foreach ($items as $item):?>
-                <tr>
+                <tr data-id="<?php echo $item['id'] ?>" data-url="<?php echo \yii\helpers\Url::to('/cart/change-quantity') ?>">
                     <td><?php echo $item['name'] ?></td>
                     <td>
                         <img src="<?php echo \common\models\Product::formatImageUrl($item['image']);  ?>" 
@@ -32,7 +32,7 @@
                     </td>
                     <td><?php echo $item['price'] ?></td>
                     <td>
-                        <input type="number" value="<?php echo $item['quantity'] ?>" class="form-control"  style ="width: 60px">
+                        <input type="number" min ="1" value="<?php echo $item['quantity'] ?>" class="form-control item-quantity"  style ="width: 60px">
                     </td>
                     <td><?php echo $item['total_price'] ?></td>
                     <td>
