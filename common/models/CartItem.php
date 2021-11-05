@@ -107,7 +107,10 @@ class CartItem extends \yii\db\ActiveRecord
             }
         } else {
             $sum = CartItem::findBySql(
-                "SELECT SUM(quantity * price) FROM cart_items WHERE created_by = :userId",
+                "SELECT SUM(c.quantity * p.price) 
+                FROM cart_items c
+                LEFT JOIN products p ON p.id = c.product_id
+                 WHERE c.created_by = :userId",
                 ['userId' => $currentUserId])->scalar();
         }
 
@@ -116,20 +119,28 @@ class CartItem extends \yii\db\ActiveRecord
 
     public static function getItemsForUser($currentUserId)
     {
-        return CartItem::findBySql(
-            "SELECT
-                    c.product_id as id,
-                    p.image,
-                    p.name,
-                    p.price,
-                    c.quantity,
-                    p.price * c.quantity as total_price
-                    FROM cart_items c
-                             LEFT JOIN products p on p.id = c.product_id
-                     WHERE c.created_by = :userId",
-            ['userId' => $currentUserId ])
-            ->asArray() 
-            ->all();
+        if(\Yii::$app->user->isGuest){
+            $cartItems = \Yii::$app->session->get(CartItem::SESSION_KEY, []);
+        } else {
+
+            $cartItems = CartItem::findBySql(
+                "SELECT
+                        c.product_id as id,
+                        p.image,
+                        p.name,
+                        p.price,
+                        c.quantity,
+                        p.price * c.quantity as total_price
+                        FROM cart_items c
+                                 LEFT JOIN products p on p.id = c.product_id
+                         WHERE c.created_by = :userId",
+                ['userId' => $currentUserId ])
+                ->asArray() 
+                ->all();
+        }
+
+        return $cartItems;
+      
     }
 
     

@@ -34,15 +34,7 @@ class CartController extends \frontend\base\Controller
     }
     public function actionIndex()
     { 
-      
-        if(\Yii::$app->user->isGuest)
-        {
-            // Get the items from session
-            $cartItems = \Yii::$app->session->get(CartItem::SESSION_KEY, []);
-        } else {
-            // get the items from the database
-            $cartItems = CartItem::getItemsForUser(currentUserId());
-        }
+        $cartItems = CartItem::getItemsForUser(currentUserId());
 
         return $this->render('index',[
             'items' => $cartItems
