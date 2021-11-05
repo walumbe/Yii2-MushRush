@@ -23,7 +23,7 @@ class CustomerAddress extends \yii\db\ActiveRecord
      */
     public static function tableName()
     {
-        return '{{%customer_addresses}}';
+        return '{{%customer_address}}';
     }
 
     /**

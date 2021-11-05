@@ -2,6 +2,8 @@
 namespace frontend\controllers;
 
 use common\models\CartItem;
+use common\models\CustomerAddress;
+use common\models\Order;
 use common\models\Product;
 use Yii;
 use yii\filters\ContentNegotiator;
@@ -39,20 +41,7 @@ class CartController extends \frontend\base\Controller
             $cartItems = \Yii::$app->session->get(CartItem::SESSION_KEY, []);
         } else {
             // get the items from the database
-            $cartItems = CartItem::findBySql(
-                "SELECT
-                               c.product_id as id,
-                               p.image,
-                               p.name,
-                               p.price,
-                               c.quantity,
-                               p.price * c.quantity as total_price
-                        FROM cart_items c
-                                 LEFT JOIN products p on p.id = c.product_id
-                         WHERE c.created_by = :userId",
-                ['userId' => \Yii::$app->user->id])
-                ->asArray() 
-                ->all();
+            $cartItems = CartItem::getItemsForUser(currentUserId());
         }
 
         return $this->render('index',[
@@ -165,5 +154,42 @@ class CartController extends \frontend\base\Controller
 
         return CartItem::getTotalQuantityForUser(currentUserId());
      
+    }
+
+    public function actionCheckout()
+    {
+       
+        $order = new Order();
+        $customerAddress = new CustomerAddress();
+        if(!isGuest())
+        {
+             /** @var \common\models\User $user */
+            $user = Yii::$app->user->identity;
+            $userAddress = $user->getAddress();
+            $order->firstname = $user->firstname;
+            $order->lastname = $user->lastname;
+            $order->email = $user->email;
+            $order->status = order::STATUS_INACTIVE;
+            $customerAddress->customer_address = $userAddress->address;
+            $customerAddress->city = $userAddress->city;
+            $customerAddress->state = $userAddress->state;
+            $customerAddress->country = $userAddress->country;
+            $customerAddress->zipcode = $userAddress->zipcode;
+
+            $cartItems =  CartItem::getItemsForUser(currentUserId());
+        } else {
+            $cartItems = \Yii::$app->session->get(CartItem::SESSION_KEY, []);
+        }
+
+        $productQuantity = CartItem::getTotalQuantityForUser(currentUserId());
+        $totalPrice = CartItem::getTotalPriceForUser(currentUserId());
+        return $this->render('checkout', [
+            'order' => $order,
+            'customerAddress' => $customerAddress,
+            'cartItems' => $cartItems,
+            'productQuantity' => $productQuantity,
+            'totalPrice' => $totalPrice,
+        ]);
+        
     }
 } 

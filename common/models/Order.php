@@ -24,6 +24,8 @@ use Yii;
  */
 class Order extends \yii\db\ActiveRecord
 {
+    const STATUS_INACTIVE = 0;
+    
     /**
      * {@inheritdoc}
      */
