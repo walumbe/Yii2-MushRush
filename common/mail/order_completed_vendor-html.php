@@ -4,10 +4,14 @@
 
 $customerAddress = $order->customerAddress;
 ?>
-<script src="https://www.paypal.com/sdk/js?client-id=<?php  echo param('paypalClientId') ?>"></script>
-
-
-
+<style>
+    .row {
+        display: flex;
+    }
+    .col {
+        flex: 1;
+    }
+</style>
 <h3>Order #<?php echo $order->id ?> summary: </h3>
 <hr>
 <div class="row">
@@ -31,7 +35,7 @@ $customerAddress = $order->customerAddress;
         <table class="table">
             <tr>
                 <th>Address</th>
-                <td><?php echo $customerAddress->customer_address ?></td>
+                <td><?php echo $customerAddress->address ?></td>
             </tr>
             <tr>
                 <th>City</th>
@@ -61,8 +65,8 @@ $customerAddress = $order->customerAddress;
             <tbody>
             <?php foreach ($order->orderItems as $item): ?>
                 <tr>
-                    <td> 
-                        <img src="<?php  echo $item->product->getImageUrl() ?>"
+                    <td>
+                        <img src="<?php echo $item->product->getImageUrl() ?>"
                             style="width: 50px;">
                     </td>
                     <td><?php echo $item->product_name ?></td>
@@ -83,53 +87,5 @@ $customerAddress = $order->customerAddress;
                 <td><?php echo Yii::$app->formatter->asCurrency($order->total_price) ?></td>
             </tr>
         </table>
-
-        <div id="paypal-button-container"></div>
     </div>
 </div>
-<script>
-  paypal.Buttons({
-    createOrder: function (data, actions) {
-      // This function sets up the details of the transaction, including the amount and line item details.
-      return actions.order.create({
-        purchase_units: [{
-          amount: {
-            value: <?php echo $order->total_price ?>
-          }
-        }]
-      });
-    },
-    onApprove: function (data, actions) {
-      console.log(data, actions);
-      // This function captures the funds from the transaction.
-      return actions.order.capture().then(function (details) {
-        console.log(details);
-        const $form = $('#checkout-form');
-        const formData = $form.serializeArray();
-        formData.push({
-          name: 'transactionId',
-          value: details.id
-        });
-        formData.push({
-          name: 'orderId',
-          value: data.orderID
-        });
-        formData.push({
-          name: 'status',
-          value: details.status
-        });
-        $.ajax({
-          method: 'post',
-          url: '<?php echo \yii\helpers\Url::to(['/cart/submit-payment', 'orderId' => $order->id])?>',
-          data: formData,
-          success: function (res) {
-            // This function shows a transaction success message to your buyer.
-            alert("Thanks for your business");
-            window.location.href = '';
-          }
-        })
-      });
-    }
-  }).render('#paypal-button-container');
-  // This function displays Smart Payment Buttons on your web page.
-</script>

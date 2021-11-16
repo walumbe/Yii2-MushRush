@@ -262,9 +262,18 @@ class CartController extends \frontend\base\Controller
             }
             $order->transaction_id = $response->result->purchase_units[0]->payments->captures[0]->id;
             if($order->save()){
+                if(!$order->sendEmailToVendor()){
+                    Yii::error("Email to the vendor is not sent");
+                }
+                if(!$order->sendEmailToCustomer()){
+                    Yii::error("Email to the customer is not sent");
+                }
                 return [
                     'success' => true
                 ] ;
+            } else {
+                Yii::error("Order was not saved. Data: ".VarDumper::dumpAsString($order->toArray()).
+                '.Errors: '.VarDumper::dumpAsString($order->errors));
             }
         }
 

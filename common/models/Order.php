@@ -151,4 +151,29 @@ class Order extends \yii\db\ActiveRecord
             "SELECT SUM(quantity) FROM order_items WHERE order_id = :orderId", ['orderId' => $this->id]
         )->scalar();
     }
+
+    public function sendEmailToVendor(){
+        return Yii::$app
+            ->mailer
+            ->compose(
+                ['html' => 'order_completed_vendor-html', 'text' => 'order_completed_vendor-text'],
+                ['order' => $this]
+            )
+            ->setFrom([Yii::$app->params['supportEmail'] => Yii::$app->name . ' robot'])
+            ->setTo(Yii::$app->params('vendorEmail'))
+            ->setSubject('New Order has been made at '. Yii::$app->name)
+            ->send();
+    }
+    public function sendEmailToCustomer(){
+        return Yii::$app
+            ->mailer
+            ->compose(
+                ['html' => 'order_completed_customer-html', 'text' => 'order_completed_customer-text'],
+                ['order' => $this]
+            )
+            ->setFrom([Yii::$app->params['supportEmail'] => Yii::$app->name . ' robot'])
+            ->setTo(Yii::$app->params('vendorEmail'))
+            ->setSubject('Your order is confirmed at '. Yii::$app->name)
+            ->send();
+    }
 }
