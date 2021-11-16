@@ -13,6 +13,14 @@ return [
     'bootstrap' => ['log'],
     'controllerNamespace' => 'frontend\controllers',
     'components' => [
+        'formatter' => [
+
+            'decimalSeparator' => '.',
+
+            'thousandSeparator' => ' ',
+
+            'currencyCode' => 'KES',
+            ],
         'request' => [
             'csrfParam' => '_csrf-frontend',
         ],
@@ -43,6 +51,9 @@ return [
             'rules' => [
             ],
         ],
+        'assetManager' => [
+            'appendTimestamp' => true
+        ]
         
     ],
     'params' => $params,
