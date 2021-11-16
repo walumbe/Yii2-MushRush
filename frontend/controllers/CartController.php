@@ -152,7 +152,10 @@ class CartController extends \frontend\base\Controller
             }
         }
 
-        return CartItem::getTotalQuantityForUser(currentUserId());
+        return [
+            'quantity' => CartItem::getTotalQuantityForUser(currentUserId()),
+            'price' => CartItem::getTotalPriceForUser(currentUserId())
+        ];
      
     }
 
