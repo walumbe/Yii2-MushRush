@@ -122,7 +122,6 @@ class SiteController extends \frontend\base\Controller
         return $this->goHome();
     }
 
-
     /**
      * Signs user up.
      *

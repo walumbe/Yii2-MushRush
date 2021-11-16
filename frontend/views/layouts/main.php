@@ -59,7 +59,10 @@ AppAsset::register($this);
                 ],
                 [
                     'label' => 'Logout',
-                    'url' => ['/site/logout']
+                    'url' => ['/site/logout'],
+                    'linkOptions' => [
+                            'data-method' => 'post'
+                    ]
                 ],
             ],
     ];
