@@ -22,6 +22,5 @@ use yii\helpers\Html;
     <?= $addressForm ->field($userAddress, 'city')?>
     <?= $addressForm ->field($userAddress, 'state')?>
     <?= $addressForm ->field($userAddress, 'country')?>
-    <?= $addressForm ->field($userAddress, 'zipcode')?>
     <?= Html::submitButton('Update', ['class' => 'btn btn-primary']) ?>
 <?php ActiveForm::end() ?>

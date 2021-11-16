@@ -2,6 +2,7 @@
 
 namespace common\models;
 
+use Exception;
 use Yii;
 
 /**
@@ -19,12 +20,15 @@ use Yii;
  * @property int|null $created_by
  *
  * @property User $createdBy
- * @property CustomerAddresses $customerAddresses
+ * @property CustomerAddress $customerAddress
  * @property OrderItems[] $orderItems
+ * @property User $created_by
  */
 class Order extends \yii\db\ActiveRecord
 {
     const STATUS_INACTIVE = 0;
+    const STATUS_COMPLETED = 1;
+    const STATUS_INCOMPLETE = 2;
     
     /**
      * {@inheritdoc}
@@ -79,13 +83,14 @@ class Order extends \yii\db\ActiveRecord
     }
 
     /**
-     * Gets query for [[CustomerAddresses]].
+     * Gets query for [[CustomerAddress]].
      *
      * @return \yii\db\ActiveQuery|\common\models\Query\CustomerAddressQuery
      */
-    public function getOrderAddresses()
+    public function getCustomerAddress()
+
     {
-        return $this->hasOne(CustomerAddress::className(), ['order_id' => 'id']);
+        return $this->hasOne(CustomerAddress::className(), ['customer_id' => 'id']);
     }
 
     /**
@@ -105,5 +110,45 @@ class Order extends \yii\db\ActiveRecord
     public static function find()
     {
         return new \common\models\Query\OrderQuery(get_called_class());
+    }
+
+    public function saveAddress($postData)
+    {
+            $customerAddress = new CustomerAddress();
+            $customerAddress->customer_id = $this->id;
+            if($customerAddress->load($postData) && $customerAddress->save()){
+                return true;
+            }
+            throw new Exception("Could not save customer address: ".implode("<br>", $customerAddress->getFirstErrors()));
+    }
+
+    public function saveOrderItems()
+    {
+        // $transaction = Yii::$app->db->beginTransaction();
+        $cartItems = CartItem::getItemsForUser(currentUserId());
+       foreach($cartItems as $cartItem){
+           $orderItem = new OrderItem();
+           $orderItem->product_name = $cartItem['name'];
+           $orderItem->product_id = $cartItem['id'];
+           $orderItem->unit_price = $cartItem['price'];
+           $orderItem->order_id = $this->id;
+           $orderItem->quantity = $cartItem['quantity'];
+           $orderItem->created_by = currentUserId();
+           if(!$orderItem->save()){
+            //    $transaction->rollBack();s
+            //    returns the first errors for each attribute
+               throw new Exception("Order item was not saved!".implode('<br>', $orderItem->getFirstErrors()));
+               break;
+           }
+       }
+    //    $transaction->commit();
+       return true;
+    }
+
+    public function getItemsQuantity()
+    {
+        return $sum = CartItem::findBySql(
+            "SELECT SUM(quantity) FROM order_items WHERE order_id = :orderId", ['orderId' => $this->id]
+        )->scalar();
     }
 }

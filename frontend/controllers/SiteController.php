@@ -239,7 +239,7 @@ class SiteController extends \frontend\base\Controller
         /** @var \common\models\User $user */
         /** @var \common\models\UserAddress $userAddress */
         $user = Yii::$app->user->identity; 
-        $userAddresses = $user->addresses;
+        // $userAddresses = $user->addresses;
         $userAddress = $user->getAddress();
         return $this->render('profile', [
             'user' => $user,

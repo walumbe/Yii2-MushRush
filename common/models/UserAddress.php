@@ -13,7 +13,6 @@ use Yii;
  * @property string $city
  * @property string $state
  * @property string $country
- * @property string|null $zipcode
  *
  * @property User $user
  */
@@ -35,7 +34,7 @@ class UserAddress extends \yii\db\ActiveRecord
         return [
             [['user_id', 'address', 'city', 'state', 'country'], 'required'],
             [['user_id'], 'integer'],
-            [['address', 'city', 'state', 'country', 'zipcode'], 'string', 'max' => 255],
+            [['address', 'city', 'state', 'country'], 'string', 'max' => 255],
             [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['user_id' => 'id']],
         ];
     }
@@ -52,7 +51,6 @@ class UserAddress extends \yii\db\ActiveRecord
             'city' => 'City',
             'state' => 'State',
             'country' => 'Country',
-            'zipcode' => 'Zipcode',
         ];
     }
 

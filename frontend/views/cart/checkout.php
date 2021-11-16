@@ -11,9 +11,11 @@ use yii\bootstrap4\ActiveForm;
 ?>
 
 
-<?php $form = ActiveForm::begin([
+ <?php $form = ActiveForm::begin([
     'id' => 'checkout-form',
+    // 'action' => ['/cart/submit-order']
 ]); ?>
+
 <div class="row">
     <div class="col">
         <div class="card mb-3">
@@ -42,7 +44,6 @@ use yii\bootstrap4\ActiveForm;
                 <?= $form->field($customerAddress, 'city') ?>
                 <?= $form->field($customerAddress, 'state') ?>
                 <?= $form->field($customerAddress, 'country') ?>
-                <?= $form->field($customerAddress, 'zipcode') ?>
             </div>
         </div>
     </div>
@@ -91,7 +92,7 @@ use yii\bootstrap4\ActiveForm;
                         </td>
                     </tr>
                 </table>
-
+                <!-- <div id="paypal-button-container"></div> -->
                 <p class="text-right mt-3">
                     <button class="btn btn-secondary">Checkout</button>
                 </p>
@@ -99,4 +100,6 @@ use yii\bootstrap4\ActiveForm;
         </div>
     </div>
 </div>
+
 <?php ActiveForm::end(); ?>
+
