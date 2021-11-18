@@ -6,7 +6,8 @@ use yii\widgets\DetailView;
 /* @var $this yii\web\View */
 /* @var $model common\models\Order */
 
-$this->title = $model->id;
+$customerAddress = $model->customerAddress;
+$this->title ='Order #'.$model->id.' details';
 $this->params['breadcrumbs'][] = ['label' => 'Orders', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 \yii\web\YiiAsset::register($this);
@@ -16,7 +17,6 @@ $this->params['breadcrumbs'][] = $this->title;
     <h1><?= Html::encode($this->title) ?></h1>
 
     <p>
-        <?= Html::a('Update', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
         <?= Html::a('Delete', ['delete', 'id' => $model->id], [
             'class' => 'btn btn-danger',
             'data' => [
@@ -30,17 +30,53 @@ $this->params['breadcrumbs'][] = $this->title;
         'model' => $model,
         'attributes' => [
             'id',
-            'total_price',
+            'total_price:currency',
             'status',
             'firstname',
             'lastname',
             'email:email',
             'transaction_id',
             'paypal_order_id',
-            'created_at',
-            'created_by',
-            'deleted_at',
+            'created_at:datetime',
         ],
     ]) ?>
+
+    <h4>Address</h4>
+    <?= DetailView::widget([
+        'model' => $customerAddress,
+        'attributes' => [
+            'address',
+            'city',
+            'state',
+            'country',
+        ],
+    ]) ?>
+
+    <h4>Order Items</h4>
+    <table class="table table-sm">
+        <thead>
+        <tr>
+            <th>Image</th>
+            <th>Name</th>
+            <th>Quantity</th>
+            <th>Unit Price</th>
+            <th>Total Price</th>
+        </tr>
+        </thead>
+        <tbody>
+        <?php foreach ($model->orderItems as $item): ?>
+            <tr>
+                <td>
+                    <img src="<?php  echo $item->product->getImageUrl() ?>"
+                         style="width: 50px;">
+                </td>
+                <td><?php echo $item->product_name ?></td>
+                <td><?php echo $item->quantity ?></td>
+                <td><?php echo Yii::$app->formatter->asCurrency($item->unit_price) ?></td>
+                <td><?php echo Yii::$app->formatter->asCurrency($item->quantity * $item->unit_price) ?></td>
+            </tr>
+        <?php endforeach; ?>
+        </tbody>
+    </table>
 
 </div>

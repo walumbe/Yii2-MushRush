@@ -18,27 +18,54 @@ $this->params['breadcrumbs'][] = $this->title;
         <?= Html::a('Create Order', ['create'], ['class' => 'btn btn-success']) ?>
     </p>
 
+    <i class="fa-chevron-up"></i>
+
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 
     <?= GridView::widget([
+            'id' => 'ordersTable',
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
+        'pager' => [
+                'class' => \yii\bootstrap4\LinkPager::class
+        ],
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
 
-            'id',
+            [
+                'attribute' => 'id',
+                'contentOptions' => ['style' => 'width: 80px']
+            ],
+            [
+                    'attribute' => 'fullname',
+                    'content' => function ($model) {
+                        return $model->firstname . " " . $model->lastname;
+                    }
+
+            ],
             'total_price',
-            'status',
-            'firstname',
-            'lastname',
             //'email:email',
             //'transaction_id',
             //'paypal_order_id',
-            //'created_at',
+            [
+                    'attribute' => 'status',
+                    'content' => function($model){
+                        if($model->status === \common\models\Order::STATUS_COMPLETED){
+                            return \yii\bootstrap4\Html::tag('span', 'completed', ['class' => 'badge badge-success']);
+                        } elseif ($model->status === \common\models\Order::STATUS_INACTIVE){
+                            return \yii\bootstrap4\Html::tag('span', 'unpaid', ['class' => 'badge badge-secondary']);
+                        } else {
+                            return \yii\bootstrap4\Html::tag('span', 'failed', ['class' => 'badge badge-danger']);
+                        }
+                    }
+            ],
+            'created_at:datetime',
+            [
+              'class' => 'common\grid\ActionColumn',
+                'template' => '{view}{delete}'
+            ],
             //'created_by',
             //'deleted_at',
-
-            ['class' => 'yii\grid\ActionColumn'],
         ],
     ]); ?>
 
