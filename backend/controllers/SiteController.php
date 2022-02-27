@@ -3,11 +3,15 @@
 namespace backend\controllers;
 
 use common\models\LoginForm;
+use common\models\Order;
+use common\models\OrderItem;
+use common\models\User;
 use Yii;
 use yii\filters\VerbFilter;
 use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\Response;
+//use yii\web\User;
 
 /**
  * Site controller
@@ -62,7 +66,21 @@ class SiteController extends Controller
      */
     public function actionIndex()
     {
-        return $this->render('index');
+        $totalEarnings  = Order::find()->paid()->sum('total_price');
+        $totalOrders  = OrderItem::find()->count();
+        $totalProducts  = OrderItem::find()
+            ->alias('oi')
+            ->innerJoin(Order::tableName().'o','o.id = oi.order_id')
+            ->andWhere(['o.status' => Order::STATUS_COMPLETED])
+            ->sum('quantity');
+        $totalUsers = User::find()->andWhere(['status' => User::STATUS_ACTIVE])->count();
+
+        return $this->render('index', [
+            'totalEarnings' => $totalEarnings,
+            'totalOrders' => $totalOrders,
+            'totalProducts' => $totalProducts,
+            'totalusers' => $totalUsers
+        ]);
     }
 
     /**
