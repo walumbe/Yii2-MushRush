@@ -19,7 +19,7 @@ return [
 
             'thousandSeparator' => ' ',
 
-            'currencyCode' => 'KES',
+            'currencyCode' => 'USD',
             ],
         'request' => [
             'csrfParam' => '_csrf-frontend',
