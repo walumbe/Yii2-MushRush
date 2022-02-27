@@ -11,7 +11,7 @@ return [
         ],
         'formatter' => [
             'datetimeFormat' => 'php:d/m/Y H:i:s',
-            'currencyCode' => 'KES'
+            'currencyCode' => 'USD'
         ]
     ],
 ];
