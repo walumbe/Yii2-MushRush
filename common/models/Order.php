@@ -27,6 +27,7 @@ use Yii;
 class Order extends \yii\db\ActiveRecord
 {
     const STATUS_INACTIVE = 0;
+    const STATUS_PAID = 1;
     const STATUS_COMPLETED = 1;
     const STATUS_INCOMPLETE = 2;
     
@@ -46,6 +47,7 @@ class Order extends \yii\db\ActiveRecord
         return [
             [['total_price', 'status', 'firstname', 'lastname', 'email'], 'required'],
             [['total_price'], 'number'],
+            [['email'], 'email'],
             [['status', 'created_at', 'created_by'], 'integer'],
             [['firstname', 'lastname'], 'string', 'max' => 45],
             [['email', 'transaction_id', 'paypal_order_id'], 'string', 'max' => 255],
