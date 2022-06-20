@@ -18,6 +18,7 @@ use frontend\models\ResetPasswordForm;
 use frontend\models\SignupForm;
 use frontend\models\ContactForm;
 use yii\data\ActiveDataProvider;
+use yii\data\Pagination;
 
 /**
  * Site controller
@@ -271,6 +272,27 @@ class SiteController extends \frontend\base\Controller
         return $this->renderAjax('user_account', [
             'user' => $user,
             'success' => $success 
+        ]);
+    }
+
+    public function actionPagination()
+    {
+        // preparing the query
+        $query = Product::find();
+
+        // get the  total number of products
+        $count = $query->count();
+
+        // creating the pagination object
+        $pagination = new Pagination(['totalCount' => $count, 'defaultPageSize' => 3]);
+
+        // limit the query using the pagination and retrieve the users
+        $models = $query->offset($pagination->offest)
+            	->limit($pagination->limit)
+                ->all();
+        return $this->render('pagination', [
+            'models' => $models,
+            'pagination' => $pagination
         ]);
     }
 }
